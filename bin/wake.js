@@ -166,10 +166,17 @@ function printUsage() {
 function parseArgs() {
   const WAKE_OWN_FLAGS = new Set(['no-minify', 'help']);
   const SHORT_FLAG_MAP = { h: 'help' };
+  const MODES = new Set(['all', 'storefront', 'tailwind']);
   const args = process.argv.slice(2);
   const positional = [];
   const wakeFlags = {};
   const passthroughArgs = [];
+
+  // A mode name is never taken as a flag value, so `wake --save storefront` still runs storefront.
+  const isFlagValue = nextArg =>
+    nextArg !== undefined
+    && !nextArg.startsWith('-')
+    && !(positional.length === 0 && MODES.has(nextArg));
 
   let i = 0;
   while (i < args.length) {
@@ -183,7 +190,7 @@ function parseArgs() {
       } else {
         passthroughArgs.push(arg);
         const nextArg = args[i + 1];
-        if (nextArg !== undefined && !nextArg.startsWith('-')) {
+        if (isFlagValue(nextArg)) {
           passthroughArgs.push(nextArg);
           i += 2;
         } else {
@@ -199,7 +206,7 @@ function parseArgs() {
       } else {
         passthroughArgs.push(arg);
         const nextArg = args[i + 1];
-        if (nextArg !== undefined && !nextArg.startsWith('-')) {
+        if (isFlagValue(nextArg)) {
           passthroughArgs.push(nextArg);
           i += 2;
         } else {
@@ -212,7 +219,7 @@ function parseArgs() {
     }
   }
 
-  const mode = process.env.WAKE_MODE || positional[0] || 'all';
+  const mode = positional[0] || 'all';
   const minify = !wakeFlags['no-minify'];
   const help = !!wakeFlags['help'];
 
@@ -222,6 +229,7 @@ function parseArgs() {
 function runCli(mode, minify, passthroughArgs) {
   switch (mode) {
     case 'all':
+      getInputFiles(); // validate CSS before starting storefront, so a failure never leaves it running
       runStorefront(passthroughArgs);
       runTailwind(minify, []);
       break;
