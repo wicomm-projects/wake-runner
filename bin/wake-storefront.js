@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-process.env.WAKE_MODE = 'storefront';
+process.argv.splice(2, 0, 'storefront');
 require('./wake');

@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-process.env.WAKE_MODE = 'tailwind';
+process.argv.splice(2, 0, 'tailwind');
 require('./wake');

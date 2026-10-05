@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- A passthrough flag placed before the mode no longer swallows it: `wake --save storefront` now runs storefront mode instead of `all`.
+- In `wake` (all) mode, `Assets/CSS/` is validated before `fbits.storefront` starts, so a CSS error no longer leaves the storefront running.
+
+### Changed
+
+- `wake-storefront` / `wake-tailwind` aliases now pass the mode as an argument instead of the `WAKE_MODE` environment variable. A `WAKE_MODE` set in the user's shell no longer overrides the mode.
+
 ## [1.0.2] - 2026-03-06
 
 ### Added
@@ -27,7 +36,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `--no-minify` flag for `wake tailwind`, `wake-tailwind`, and `wake` commands. CSS output is minified by default; pass `--no-minify` to disable.
 - Repository, homepage, and bugs URLs in `package.json` for correct linking on the npm package page.
 
 ### Changed
